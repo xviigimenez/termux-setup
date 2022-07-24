@@ -1,0 +1,119 @@
+#!/bin/bash
+#   ______                              
+#  /_  __/__  _________ ___  __  ___  __
+#   / / / _ \/ ___/ __ `__ \/ / / / |/_/
+#  / / /  __/ /  / / / / / / /_/ />  <  
+# /_/  \___/_/  /_/ /_/ /_/\__,_/_/|_|  
+#                                       
+#         _____      __            
+#        / ___/___  / /___  ______ 
+#        \__ \/ _ \/ __/ / / / __ \
+#       ___/ /  __/ /_/ /_/ / /_/ /
+#      /____/\___/\__/\__,_/ .___/ 
+#                         /_/      
+#
+# A script to set up Termux - Version 1.0
+
+setup_storage() {
+    termux-setup-storage
+}
+
+setup_packages() {
+    pkg upgrade &&
+    pkg install man vim lf fd tree openssh ffmpeg htop gotop glow figlet cowsay python nodejs &&
+    pip install --upgrade pip &&
+    pip cache purge
+}
+
+setup_vimrc() {
+    git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime
+    sh $HOME/.vim_runtime/install_awesome_vimrc.sh
+}
+
+setup_yt-dlp() {
+    pip install -U yt-dlp &&
+    pip cache purge &&
+    yt-dlp --version
+}
+
+setup_gallery-dl() {
+    pip install -U gallery-dl &&
+    pip cache purge &&
+    gallery-dl --version
+}
+
+setup_diskonaut() {
+    pkg install rust &&
+    cargo install diskonaut &&
+    while [[ "$yn" =~ ^[YyNn] ]]; do
+        read -p "Keep rust installed? [y/n] " yn &&
+        if [$yn = "y" ] || [ $yn = "Y"]
+        then
+            echo 'PATH=$PATH:$HOME/.cargo/bin && export PATH' >> $HOME/.bashrc
+        elif [$yn = "n" ] || [ $yn = "N"]
+        then
+            mkdir -p $HOME/.bin &&
+            mv -v $HOME/.cargo/bin/diskonaut $HOME/.bin/ &&
+            pkg remove rust &&
+            rm -rf $HOME/.cargo/
+        else
+            echo "Please enter either "y" or "n"."
+        fi
+    done
+}
+
+setup_apache() {
+	pkg install termux-services apache2 &&
+	sv-enable httpd &&
+	echo 'export apache2="/data/data/com.termux/files/usr/etc/apache2/" &&' >> $HOME/.bashrc &&
+	echo 'export htdocs="/data/data/com.termux/files/usr/share/apache2/default-site/htdocs"' >> $HOME/.bashrc &&
+    source $HOME/.bashrc &&
+	printf "Your 'apache2' folder is:\n$apache2" &&
+    printf "Your 'htdocs' folder is:\n$htdocs"
+}
+
+if [ $1 = "storage" ]
+then
+    setup_storage
+fi
+
+if [ $1 = "packages" ]
+then
+    setup_packages
+fi
+
+if [ $1 = "vimrc" ]
+then
+    setup_vimrc
+fi
+
+if [ $1 = "yt-dlp" ]
+then
+    setup_yt-dlp
+fi
+
+if [ $1 = "gallery-dl" ]
+then
+    setup_gallery-dl
+fi
+
+if [ $1 = "diskonaut" ]
+then
+    setup_diskonaut
+fi
+
+if [ $1 = "apache" ]
+then
+    setup_apache
+fi
+
+if [ $1 = "all" ]
+then
+    setup_storage &&
+    setup_packages &&
+    setup_vimrc &&
+    setup_yt-dlp &&
+    setup_gallery-dl &&
+    setup_diskonaut &&
+    setup_apache
+fi

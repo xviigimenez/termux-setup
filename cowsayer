@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for cows in $(ls /data/data/com.termux/files/usr/share/cowsay/cows)
+do
+    echo "$(echo $cows | sed /s/*.)"
+done
