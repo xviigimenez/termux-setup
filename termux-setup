@@ -12,13 +12,16 @@
 #      /____/\___/\__/\__,_/ .___/ 
 #                         /_/      
 #
-# A script to set up Termux - Version 1.0
+# A script to set up Termux - Version 1.1
 
 setup_storage() {
+    figlet -cf standard "Storage" && sleep 1 &&
     termux-setup-storage
 }
 
 setup_packages() {
+    figlet -cf standard "Packages" && sleep 1 &&
+    termux-change-repo &&
     pkg upgrade &&
     pkg install man vim lf fd tree openssh ffmpeg htop gotop glow figlet cowsay python nodejs &&
     pip install --upgrade pip &&
@@ -26,23 +29,27 @@ setup_packages() {
 }
 
 setup_vimrc() {
+    figlet -cf standard ".vimrc" && sleep 1 &&
     git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime
     sh $HOME/.vim_runtime/install_awesome_vimrc.sh
 }
 
 setup_yt-dlp() {
+    figlet -cf standard "yt-dlp" && sleep 1 &&
     pip install -U yt-dlp &&
     pip cache purge &&
     yt-dlp --version
 }
 
 setup_gallery-dl() {
+    figlet -cf standard "gallery-dl" && sleep 1 &&
     pip install -U gallery-dl &&
     pip cache purge &&
     gallery-dl --version
 }
 
 setup_diskonaut() {
+    figlet -cf standard "diskonaut" && sleep 1 &&
     pkg install rust &&
     cargo install diskonaut &&
     while [[ "$yn" =~ ^[YyNn] ]]; do
@@ -63,6 +70,7 @@ setup_diskonaut() {
 }
 
 setup_apache() {
+    figlet -cf standard "apache" && sleep 1 &&
 	pkg install termux-services apache2 &&
 	sv-enable httpd &&
 	echo 'export apache2="/data/data/com.termux/files/usr/etc/apache2/" &&' >> $HOME/.bashrc &&
@@ -114,6 +122,7 @@ then
     setup_vimrc &&
     setup_yt-dlp &&
     setup_gallery-dl &&
-    setup_diskonaut &&
-    setup_apache
+    # setup_diskonaut &&
+    # setup_apache
+    setup_diskonaut
 fi
