@@ -141,7 +141,8 @@ then
     setup_gallery-dl &&
     # setup_diskonaut &&
     # setup_apache
-    setup_diskonaut
+    setup_diskonaut &&
+    printf "The installation was completed successfully.\n"
 fi
 
 # Other functions
