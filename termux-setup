@@ -12,51 +12,61 @@
 #      /____/\___/\__/\__,_/ .___/ 
 #                         /_/      
 #
-# A script to set up Termux - Version 1.5
+# A script to set up Termux - Version 1.6
 
 currentDir=$PWD &&
-cd $HOME
+cd $HOME &&
+
+printf "\nPlease confirm the prompts to follow.\n\n" && sleep 1
 
 setup_storage() {
     printf "Setting up storage...\n" && sleep 1 &&
-    termux-setup-storage
+    termux-setup-storage &&
+    printf "Finished setting up the internal storage.\n" && sleep 1
 }
 
 setup_packages() {
     printf "Setting up packages...\n" && sleep 1 &&
     termux-change-repo &&
     pkg upgrade &&
+    printf "Finished upgrading the default packages.\n" && sleep 1 &&
     pkg install man vim git openssh p7zip ffmpeg lf fd tree glow python nodejs htop gotop figlet cowsay &&
+    printf "Finished installing packages from the Termux repositories.\n" && sleep 1 &&
     pip install --upgrade pip &&
     pip install wheel &&
-    pip cache purge
+    pip cache purge &&
+    printf "Finished upgrading pip.\n" && sleep 1
 }
 
 setup_termux-style() {
     figlet -cf standard "termux-style" && sleep 1 &&
     git clone https://github.com/adi1090x/termux-style &&
     termux-style/install &&
-    rm -rf termux-style/
+    rm -rf termux-style/ &&
+    printf "Finished setting up termux-style.\n" && sleep 1
 }
 
 setup_vimrc() {
     figlet -cf standard ".vimrc" && sleep 1 &&
     git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime
-    sh $HOME/.vim_runtime/install_awesome_vimrc.sh
+    sh $HOME/.vim_runtime/install_awesome_vimrc.sh &&
+    printf "Finished setting up amix's awesome .vimrc.\n" && sleep 1
 }
 
 setup_yt-dlp() {
     figlet -cf standard "yt-dlp" && sleep 1 &&
     pip install -U yt-dlp &&
     pip cache purge &&
-    yt-dlp --version
+    yt-dlp --version &&
+    printf "Finished setting up yt-dlp.\n" && sleep 1
 }
 
 setup_gallery-dl() {
     figlet -cf standard "gallery-dl" && sleep 1 &&
     pip install -U gallery-dl &&
     pip cache purge &&
-    gallery-dl --version
+    gallery-dl --version &&
+    printf "Finished setting up gallery-dl.\n" && sleep 1
 }
 
 setup_diskonaut() {
@@ -77,7 +87,8 @@ setup_diskonaut() {
         else
             echo "Please enter either "y" or "n"."
         fi
-    done
+    done &&
+    printf "Finished setting up diskonaut.\n" && sleep 1
 }
 
 setup_apache() {
@@ -88,7 +99,8 @@ setup_apache() {
 	echo 'export htdocs="/data/data/com.termux/files/usr/share/apache2/default-site/htdocs"' >> $HOME/.bashrc &&
     source $HOME/.bashrc &&
 	printf "Your 'apache2' folder is:\n$apache2" &&
-    printf "Your 'htdocs' folder is:\n$htdocs"
+    printf "Your 'htdocs' folder is:\n$htdocs" &&
+    printf "Finished setting up the apache web server.\n" && sleep 1
 }
 
 if [ $1 = "storage" ]
@@ -133,16 +145,19 @@ fi
 
 if [ $1 = "all" ]
 then
-    setup_storage &&
-    setup_packages &&
-    setup_termux-style &&
-    setup_vimrc &&
-    setup_yt-dlp &&
-    setup_gallery-dl &&
-    # setup_diskonaut &&
-    # setup_apache
-    setup_diskonaut &&
-    printf "The installation was completed successfully.\n"
+    all() {
+        setup_storage &&
+        setup_packages &&
+        setup_termux-style &&
+        setup_vimrc &&
+        setup_yt-dlp &&
+        setup_gallery-dl &&
+        # setup_diskonaut &&
+        # setup_apache
+        setup_diskonaut
+    }
+    time all &&
+    printf "\nThe setup completed successfully.\nPlease enjoy your installation.\n"
 fi
 
 # Other functions
