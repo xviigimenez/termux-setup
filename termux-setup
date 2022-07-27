@@ -18,16 +18,17 @@ currentDir=$PWD &&
 cd $HOME
 
 setup_storage() {
-    figlet -cf standard "Storage" && sleep 1 &&
+    printf "Setting up storage...\n" && sleep 1 &&
     termux-setup-storage
 }
 
 setup_packages() {
-    figlet -cf standard "Packages" && sleep 1 &&
+    printf "Setting up packages...\n" && sleep 1 &&
     termux-change-repo &&
     pkg upgrade &&
-    pkg install man vim lf fd tree openssh ffmpeg htop gotop glow figlet cowsay python nodejs &&
+    pkg install man vim git openssh p7zip ffmpeg lf fd tree glow python nodejs htop gotop figlet cowsay &&
     pip install --upgrade pip &&
+    pip install wheel &&
     pip cache purge
 }
 
