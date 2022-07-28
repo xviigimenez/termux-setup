@@ -3,21 +3,23 @@
 #  /_  __/__  _________ ___  __  ___  __
 #   / / / _ \/ ___/ __ `__ \/ / / / |/_/
 #  / / /  __/ /  / / / / / / /_/ />  <  
-# /_/  \___/_/  /_/ /_/ /_/\__,_/_/|_|  
+# /_/  \___/_/  /_/ /_/ /_/\____/_/|_|  
 #                                       
 #         _____      __            
 #        / ___/___  / /___  ______ 
 #        \__ \/ _ \/ __/ / / / __ \
 #       ___/ /  __/ /_/ /_/ / /_/ /
-#      /____/\___/\__/\__,_/ .___/ 
+#      /____/\___/\__/\____/ ____/ 
 #                         /_/      
 #
-# A script to set up Termux - Version 1.6
+# A script to set up Termux - Version 1.7
 
 currentDir=$PWD &&
-cd $HOME &&
+cd "$HOME" &&
 
 printf "\nPlease confirm the prompts to follow.\n\n" && sleep 1
+
+# Setup functions
 
 setup_storage() {
     printf "Setting up storage...\n" && sleep 1 &&
@@ -48,8 +50,8 @@ setup_termux-style() {
 
 setup_vimrc() {
     figlet -cf standard ".vimrc" && sleep 1 &&
-    git clone --depth=1 https://github.com/amix/vimrc.git $HOME/.vim_runtime
-    sh $HOME/.vim_runtime/install_awesome_vimrc.sh &&
+    git clone --depth=1 https://github.com/amix/vimrc.git "$HOME"/.vim_runtime
+    sh "$HOME"/.vim_runtime/install_awesome_vimrc.sh &&
     printf "Finished setting up amix's awesome .vimrc.\n" && sleep 1
 }
 
@@ -74,18 +76,18 @@ setup_diskonaut() {
     pkg install rust &&
     cargo install diskonaut &&
     while [[ "$yn" =~ ^[YyNn] ]]; do
-        read -p "Keep rust installed? [y/n] " yn &&
-        if [$yn = "y" ] || [ $yn = "Y"]
+        read -rp "Keep rust installed? [y/n] " yn &&
+        if [ "$yn" = "y" ] || [ "$yn" = "Y" ]
         then
-            echo 'PATH=$PATH:$HOME/.cargo/bin && export PATH' >> $HOME/.bashrc
-        elif [$yn = "n" ] || [ $yn = "N"]
+            echo 'PATH=$PATH:"$HOME"/.cargo/bin && export PATH' >> "$HOME"/.bashrc
+        elif [ "$yn" = "n" ] || [ "$yn" = "N" ]
         then
-            mkdir -p $HOME/.bin &&
-            mv -v $HOME/.cargo/bin/diskonaut $HOME/.bin/ &&
+            mkdir -p "$HOME"/.bin &&
+            mv -v "$HOME"/.cargo/bin/diskonaut "$HOME"/.bin/ &&
             pkg remove rust &&
-            rm -rf $HOME/.cargo/
+            rm -rf "$HOME"/.cargo/
         else
-            echo "Please enter either "y" or "n"."
+            echo 'Please enter either "y" or "n".'
         fi
     done &&
     printf "Finished setting up diskonaut.\n" && sleep 1
@@ -95,55 +97,55 @@ setup_apache() {
     figlet -cf standard "apache" && sleep 1 &&
 	pkg install termux-services apache2 &&
 	sv-enable httpd &&
-	echo 'export apache2="/data/data/com.termux/files/usr/etc/apache2/" &&' >> $HOME/.bashrc &&
-	echo 'export htdocs="/data/data/com.termux/files/usr/share/apache2/default-site/htdocs"' >> $HOME/.bashrc &&
-    source $HOME/.bashrc &&
+	echo 'export apache2="/data/data/com.termux/files/usr/etc/apache2/" &&' >> "$HOME"/.bashrc &&
+	echo 'export htdocs="/data/data/com.termux/files/usr/share/apache2/default-site/htdocs"' >> "$HOME"/.bashrc &&
+    source "$HOME"/.bashrc &&
 	printf "Your 'apache2' folder is:\n$apache2" &&
     printf "Your 'htdocs' folder is:\n$htdocs" &&
     printf "Finished setting up the apache web server.\n" && sleep 1
 }
 
-if [ $1 = "storage" ]
+if [ "$1" = "storage" ]
 then
     setup_storage
 fi
 
-if [ $1 = "packages" ]
+if [ "$1" = "packages" ]
 then
     setup_packages
 fi
 
-if [ $1 = "termux-style" ]
+if [ "$1" = "termux-style" ]
 then
     setup_termux-style
 fi
 
-if [ $1 = "vimrc" ]
+if [ "$1" = "vimrc" ]
 then
     setup_vimrc
 fi
 
-if [ $1 = "yt-dlp" ]
+if [ "$1" = "yt-dlp" ]
 then
     setup_yt-dlp
 fi
 
-if [ $1 = "gallery-dl" ]
+if [ "$1" = "gallery-dl" ]
 then
     setup_gallery-dl
 fi
 
-if [ $1 = "diskonaut" ]
+if [ "$1" = "diskonaut" ]
 then
     setup_diskonaut
 fi
 
-if [ $1 = "apache" ]
+if [ "$1" = "apache" ]
 then
     setup_apache
 fi
 
-if [ $1 = "all" ]
+if [ "$1" = "all" ]
 then
     all() {
         setup_storage &&
@@ -164,23 +166,23 @@ fi
 
 create_backup() {
     # /sdcard is the internal storage
-    tar -vzcf /sdcard/termux_backup-$(date +%Y-%m-%d).tar.gz -C /data/data/com.termux/files ./home ./usr
+    tar -vzcf /sdcard/termux_backup-"$(date +%Y-%m-%d)".tar.gz -C /data/data/com.termux/files ./home ./usr
 }
 
 restore_backup() {
     # all files will be overwritten during the restoration process
-    read  -p "Enter the location to the backup file: " file
-    tar -vzxf $file -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
+    read  -rp "Enter the location to the backup file: " file
+    tar -vzxf "$file" -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
 }
 
-if [ $1 = "backup" ]
+if [ "$1" = "backup" ]
 then
     create_backup
 fi
 
-if [ $1 = "restore" ]
+if [ "$1" = "restore" ]
 then
     restore_backup
 fi
 
-cd $currentDir
+cd "$currentDir"
