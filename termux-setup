@@ -48,11 +48,15 @@ setup_termux-style() {
     printf "Finished setting up termux-style.\n" && sleep 1
 }
 
-setup_vimrc() {
-    figlet -cf standard ".vimrc" && sleep 1 &&
-    git clone --depth=1 https://github.com/amix/vimrc.git "$HOME"/.vim_runtime
+setup_vim() {
+    figlet -cf standard "vim" && sleep 1 &&
+    printf "Setting up amix's awesome .vimrc...\n" &&
+    git clone --depth=1 https://github.com/amix/vimrc.git "$HOME"/.vim_runtime &&
     sh "$HOME"/.vim_runtime/install_awesome_vimrc.sh &&
-    printf "Finished setting up amix's awesome .vimrc.\n" && sleep 1
+    printf "Finished setting up amix's configuration.\n" && sleep 1 &&
+    printf "Installing other plugins via pathogen.vim...\n" && sleep 1 &&
+    git clone https://github.com/vimwiki/vimwiki "$HOME"/.vim_runtime/my_plugins/vimwiki &&
+    printf "Finished installing plugins.\n" && sleep 1
 }
 
 setup_yt-dlp() {
