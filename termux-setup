@@ -12,7 +12,7 @@
 #      /____/\___/\__/\____/ ____/ 
 #                         /_/      
 #
-# A script to set up Termux - Version 1.8
+# A script to set up Termux - Version 1.9
 
 currentDir=$PWD &&
 cd "$HOME" &&
@@ -175,13 +175,13 @@ terminal_settings() {
 
 create_backup() {
     # /sdcard is the internal storage
-    tar -vzcf /sdcard/termux_backup-"$(date +%Y-%m-%d)".tar.gz -C /data/data/com.termux/files ./home ./usr
+    time tar -vzcf /sdcard/termux_backup-"$(date +%Y-%m-%d)".tar.gz -C /data/data/com.termux/files ./home ./usr
 }
 
 restore_backup() {
     # all files will be overwritten during the restoration process
     read  -rp "Enter the location to the backup file: " file
-    tar -vzxf "$file" -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
+    time tar -vzxf "$file" -C /data/data/com.termux/files --recursive-unlink --preserve-permissions
 }
 
 if [ "$1" = "settings" ]
